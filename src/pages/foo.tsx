@@ -14,8 +14,10 @@ type FooProps = {
 }
 
 export const getStaticProps: GetStaticProps<FooProps> = async (context) => {
-    const tsvPath = path.join(process.cwd(), 'src', 'data', 'songs.tsv')
-    const tsvData = fs.readFileSync(tsvPath, 'utf-8')
+    const SOURCE_URL = 'https://gist.githubusercontent.com/tondol/691a25d10fd9554949800924b3ee7ec0/raw/b2dac3fd817b96b38b32fd243d773ac48a8b923e/songs.tsv'
+
+    const res = await fetch(SOURCE_URL)
+    const tsvData = await res.text()
     const songs = tsvData.split("\n").map((line, i) => {
         const records = line.split("\t")
         // ヘッダー行とデータが不完全な行は取り除く
