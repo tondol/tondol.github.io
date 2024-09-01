@@ -71,7 +71,7 @@ export default function Kanji(props: KanjiProps) {
 
     const kanjiChars = question ? question.kanjiPart.split("").map((c, i) => [c, i]) : []
 
-    return question ? (
+    return (
         <div className={styles.container}>
             <div className={styles.question}>
                 <h2>問題: この漢字を含む楽曲は？</h2>
@@ -90,11 +90,13 @@ export default function Kanji(props: KanjiProps) {
                 </p>
                 <p className={styles.showAnswerButton}>
                     <button onClick={() => {
-                        setQuestion({
-                            ...question,
-                            isShowedAnswer: true,
-                        })
-                    }} disabled={question.isShowedAnswer}>回答を見る</button>
+                        if (question) {
+                            setQuestion({
+                                ...question,
+                                isShowedAnswer: true,
+                            })
+                        }
+                    }} disabled={question?.isShowedAnswer}>回答を見る</button>
                 </p>
                 <p className={styles.reloadButton}>
                     <button onClick={() => {
@@ -102,7 +104,7 @@ export default function Kanji(props: KanjiProps) {
                     }}>次の問題</button>
                 </p>
             </div>
-            {question.isShowedAnswer && (
+            {question?.isShowedAnswer && (
                 <div className={styles.answer}>
                     <h2>回答</h2>
                     <p className={styles.answerBody}>
@@ -113,8 +115,6 @@ export default function Kanji(props: KanjiProps) {
                 </div>
             )}
         </div>
-    ) : (
-        <></>
     )
 }
 

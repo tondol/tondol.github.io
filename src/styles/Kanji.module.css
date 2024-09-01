@@ -15,12 +15,13 @@
 }
 
 .questionBody {
-    font-size: 40px;
     width: 209px; /* 4 (border) + 25 (padding) + (40 + 5) * 4 */
+    height: 120px; /* 4 (border) + 20 (padding) + (40 * 1.2) * 2 */
+    margin: 0 auto 10px auto;
+    padding: 10px 10px 10px 15px;
+    font-size: 40px;
     line-height: 1.2;
     letter-spacing: 5px;
-    padding: 10px 10px 10px 15px;
-    margin: 0 auto 10px auto;
     border: #505050 2px solid;
     border-radius: 10px;
 }
