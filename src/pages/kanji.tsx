@@ -2,6 +2,7 @@ import { GetStaticProps } from "next"
 import { useEffect, useState } from "react"
 import styles from "@/styles/Kanji.module.css";
 import Link from "next/link";
+import Head from 'next/head'
 
 type KanjiSong = {
     title: string
@@ -14,7 +15,7 @@ type KanjiProps = {
 }
 
 export const getStaticProps: GetStaticProps<KanjiProps> = async (context) => {
-    const SOURCE_URL = 'https://gist.githubusercontent.com/tondol/691a25d10fd9554949800924b3ee7ec0/raw/b2dac3fd817b96b38b32fd243d773ac48a8b923e/songs.tsv'
+    const SOURCE_URL = 'https://gist.githubusercontent.com/tondol/691a25d10fd9554949800924b3ee7ec0/raw/2c0d98b1b61eec9ab0204303473b041a237e19a6/songs.tsv'
 
     const res = await fetch(SOURCE_URL)
     const tsvData = await res.text()
@@ -73,6 +74,9 @@ export default function Kanji(props: KanjiProps) {
 
     return (
         <div className={styles.container}>
+            <Head>
+                <title>漢字八字Aqours楽曲当</title>
+            </Head>
             <div className={styles.question}>
                 <h2>問題: この漢字を含む楽曲は？</h2>
                 <AnimationStyle />
@@ -96,7 +100,7 @@ export default function Kanji(props: KanjiProps) {
                                 isShowedAnswer: true,
                             })
                         }
-                    }} disabled={question?.isShowedAnswer}>回答を見る</button>
+                    }} disabled={question?.isShowedAnswer}>正解を見る</button>
                 </p>
                 <p className={styles.reloadButton}>
                     <button onClick={() => {
@@ -106,7 +110,7 @@ export default function Kanji(props: KanjiProps) {
             </div>
             {question?.isShowedAnswer && (
                 <div className={styles.answer}>
-                    <h2>回答</h2>
+                    <h2>正解</h2>
                     <p className={styles.answerBody}>
                         <Link href={question.targetSong.sourceUrl} target="_blank">
                             {question.targetSong.title} / {question.targetSong.artist}
