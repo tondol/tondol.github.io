@@ -1,6 +1,7 @@
 import { GetStaticProps } from "next"
 import { useEffect, useState } from "react"
 import styles from "@/styles/Kanji.module.css";
+import Link from "next/link";
 
 type KanjiSong = {
     title: string
@@ -38,6 +39,7 @@ export const getStaticProps: GetStaticProps<KanjiProps> = async (context) => {
 type Question = {
     targetSong: KanjiSong
     kanjiPart: string
+    isShowedAnswer: boolean
 }
 
 export default function Kanji(props: KanjiProps) {
@@ -45,23 +47,20 @@ export default function Kanji(props: KanjiProps) {
     const KANJI_LENGTH = 8
 
     const [question, setQuestion] = useState<Question | undefined>(undefined)
-    const [isShowedAnswer, setShowedAnswer] = useState(false)
-    const [isInAnimation, setInAnimation] = useState(false)
 
     const reloadQuestion = () => {
         const targetSong = songs[Math.floor(Math.random() * songs.length)]
         const startKanjiIndex = Math.floor(Math.random() * (targetSong.kanjiBody.length - KANJI_LENGTH))
         const kanjiPart = targetSong.kanjiBody.substring(startKanjiIndex, startKanjiIndex + KANJI_LENGTH)
-        setQuestion({
-            targetSong,
-            kanjiPart,
-        })
-        setShowedAnswer(false)
 
-        // アニメーションをリセットするためにstateを一度falseにする
-        setInAnimation(false)
+        // アニメーションをリセットするためにstateを一度undefinedにする
+        setQuestion(undefined)
         requestAnimationFrame(() => {
-            setInAnimation(true)
+            setQuestion({
+                targetSong,
+                kanjiPart,
+                isShowedAnswer: false,
+            })
         })
     }
 
@@ -83,7 +82,7 @@ export default function Kanji(props: KanjiProps) {
                         const index = e[1] as number
                         return (
                             <span key={index} style={{
-                                animation: isInAnimation ? `fadeIn 0.5s ease ${index * 1 + 1}s forwards` : '',
+                                animation: `fadeIn 0.5s ease ${index * 1 + 1}s forwards`,
                                 opacity: 0,
                             }}>{kanji}</span>
                         )
@@ -91,8 +90,11 @@ export default function Kanji(props: KanjiProps) {
                 </p>
                 <p className={styles.showAnswerButton}>
                     <button onClick={() => {
-                        setShowedAnswer(true)
-                    }} disabled={isShowedAnswer}>回答を見る</button>
+                        setQuestion({
+                            ...question,
+                            isShowedAnswer: true,
+                        })
+                    }} disabled={question.isShowedAnswer}>回答を見る</button>
                 </p>
                 <p className={styles.reloadButton}>
                     <button onClick={() => {
@@ -100,11 +102,13 @@ export default function Kanji(props: KanjiProps) {
                     }}>次の問題</button>
                 </p>
             </div>
-            {isShowedAnswer && (
+            {question.isShowedAnswer && (
                 <div className={styles.answer}>
                     <h2>回答</h2>
                     <p className={styles.answerBody}>
-                        {question.targetSong.title} / {question.targetSong.artist}
+                        <Link href={question.targetSong.sourceUrl} target="_blank">
+                            {question.targetSong.title} / {question.targetSong.artist}
+                        </Link>
                     </p>
                 </div>
             )}
